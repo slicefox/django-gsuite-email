@@ -1,8 +1,15 @@
-=====
+====================
 GSuite Email Backend
-=====
+====================
 
 This package helps send emails through google GSuite serviceaccount credentials
+
+
+Installation
+------------
+
+pip install django-gsuite-email
+
 
 Quick start
 -----------

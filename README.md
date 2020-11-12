@@ -9,20 +9,21 @@ This package helps send emails through google GSuite serviceaccount credentials
 
 
 ## Installation
-
+```sh
 pip install django-gsuite-email
-
+```
 
 # Quick start
 
-1. Add this to your INSTALLED_APPS setting like this::
-
-    INSTALLED_APPS = [
-        ...
-        'django_gsuite_email',
-        ...
-    ]
-
-2. Set the Email EMAIL_BACKEND setting in settings like this::
-
-    EMAIL_BACKEND = 'django_gsuite_email.GSuiteEmailBackend'
+1. Add it to installed apps in `setings.py`
+```python
+INSTALLED_APPS = [
+    ...
+    'django_gsuite_email',
+    ...
+]
+```
+2. Set the Email EMAIL_BACKEND setting
+```python
+EMAIL_BACKEND = 'django_gsuite_email.backends.GSuiteEmailBackend'
+```

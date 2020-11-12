@@ -8,19 +8,22 @@ from google.auth import exceptions
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
+from .utils import get_credentials_file, get_from_account
+
 
 class GSuiteEmailBackend(BaseEmailBackend):
     def __init__(self, fail_silently=False, **kwargs):
+
         self.fail_silently = fail_silently
-        self.credentials = 'credentials/credentials.json' or settings.GSUITE_CREDENTIALS_FILE
-        self.API_SCOPE =['https://www.googleapis.com/auth/gmail.send',]
-        self.GSUITE_FROM_ACCOUNT = settings.GSUITE_FROM_ACCOUNT
+        self.credentials = get_credentials_file()
+        self.API_SCOPE = ['https://www.googleapis.com/auth/gmail.send', ]
+        self.default_from = get_from_account()
         self.connection = None
         self._lock = threading.RLock()
-    
-    
-    def _delegate_user(self,user_id):
-        credentials = service_account.Credentials.from_service_account_file(self.credentials,scopes=self.API_SCOPE)
+
+    def _delegate_user(self, user_id):
+        credentials = service_account.Credentials.from_service_account_file(
+            self.credentials, scopes=self.API_SCOPE)
         credentials_delegated = credentials.with_subject(user_id)
         return credentials_delegated
 
@@ -40,7 +43,6 @@ class GSuiteEmailBackend(BaseEmailBackend):
                     # skip this message
                     continue
 
-                
                 sent = self._send(message)
                 if sent:
                     num_sent += 1
@@ -49,23 +51,22 @@ class GSuiteEmailBackend(BaseEmailBackend):
             #     self.close()
         return num_sent
 
-
-
-    def open(self,from_email=settings.GSUITE_FROM_ACCOUNT):
+    def open(self, from_email=settings.GSUITE_FROM_ACCOUNT):
         """
         Ensure an open connection to the email server. Return whether or not a
         new connection was required (True or False) or None if an exception
         passed silently.
         """
-        if self.connection and from_email==self.GSUITE_FROM_ACCOUNT:
+        if self.connection and from_email == self.default_from:
             # Nothing to do if the connection is already open for same delegation
             return False
 
         try:
             credentials = self._delegate_user(from_email)
-            self.connection = build("gmail","v1",credentials=credentials)
+            self.connection = build("gmail", "v1", credentials=credentials)
+            self.default_from = from_email
             return True
-        except (exceptions.DefaultCredentialsError,exceptions.GoogleAuthError,exceptions.RefreshError,exceptions.TransportError):
+        except (exceptions.DefaultCredentialsError, exceptions.GoogleAuthError, exceptions.RefreshError, exceptions.TransportError):
             if not self.fail_silently:
                 raise
 
@@ -82,8 +83,9 @@ class GSuiteEmailBackend(BaseEmailBackend):
             return False
         encoding = email_message.encoding or settings.DEFAULT_CHARSET
         # check this
-        from_email = sanitize_address(email_message.from_email, encoding)            
-        recipients = [sanitize_address(addr, encoding) for addr in email_message.recipients()]
+        from_email = sanitize_address(email_message.from_email, encoding)
+        recipients = [sanitize_address(addr, encoding)
+                      for addr in email_message.recipients()]
         message = email_message.message()
         # https://developers.google.com/gmail/api/guides/sending#creating_messages
         raw = base64.urlsafe_b64encode(message.as_bytes())
@@ -91,9 +93,10 @@ class GSuiteEmailBackend(BaseEmailBackend):
         binary_content = {'raw': raw}
         try:
             # need different login to check success
-            self.connection.users().messages().send(userId='me', body=binary_content).execute()
+            self.connection.users().messages().send(
+                userId='me', body=binary_content).execute()
             # self.connection.sendmail(from_email, recipients, message.as_bytes(linesep='\r\n'))
-        except (exceptions.DefaultCredentialsError,exceptions.GoogleAuthError,exceptions.RefreshError,exceptions.TransportError):
+        except (exceptions.DefaultCredentialsError, exceptions.GoogleAuthError, exceptions.RefreshError, exceptions.TransportError):
             if not self.fail_silently:
                 raise
             return False

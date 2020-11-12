@@ -25,5 +25,5 @@ INSTALLED_APPS = [
 ```
 2. Set the Email EMAIL_BACKEND setting
 ```python
-EMAIL_BACKEND = 'django_gsuite_email.backends.GSuiteEmailBackend'
+EMAIL_BACKEND = 'django_gsuite_email.GSuiteEmailBackend'
 ```

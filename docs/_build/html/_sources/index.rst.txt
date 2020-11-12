@@ -30,7 +30,7 @@ Usage
 
 2. Set the Email EMAIL_BACKEND setting::
 
-    EMAIL_BACKEND = 'django_gsuite_email.GSuiteEmailBackend'
+    EMAIL_BACKEND = 'django_gsuite_email.backends.GSuiteEmailBackend'
 
 
 

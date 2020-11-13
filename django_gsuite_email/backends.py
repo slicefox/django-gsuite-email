@@ -8,7 +8,7 @@ from google.auth import exceptions
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from .utils import get_credentials_file, get_from_account
+from .utils import get_credentials_file
 
 
 class GSuiteEmailBackend(BaseEmailBackend):
@@ -17,7 +17,8 @@ class GSuiteEmailBackend(BaseEmailBackend):
         self.fail_silently = fail_silently
         self.credentials = get_credentials_file()
         self.API_SCOPE = ['https://www.googleapis.com/auth/gmail.send', ]
-        self.default_from = get_from_account()
+        # to reopen connection with different delegation when from_email changes
+        self.current_user = None
         self.connection = None
         self._lock = threading.RLock()
 
@@ -51,20 +52,24 @@ class GSuiteEmailBackend(BaseEmailBackend):
             #     self.close()
         return num_sent
 
-    def open(self, from_email=settings.GSUITE_FROM_ACCOUNT):
+    def open(self, from_email):
         """
         Ensure an open connection to the email server. Return whether or not a
         new connection was required (True or False) or None if an exception
         passed silently.
         """
-        if self.connection and from_email == self.default_from:
+        if not self.current_user:
+            # first connection
+            self.current_user = from_email
+
+        if self.connection and from_email == self.current_user:
             # Nothing to do if the connection is already open for same delegation
             return False
 
         try:
             credentials = self._delegate_user(from_email)
             self.connection = build("gmail", "v1", credentials=credentials)
-            self.default_from = from_email
+            self.current_user = from_email
             return True
         except (exceptions.DefaultCredentialsError, exceptions.GoogleAuthError, exceptions.RefreshError, exceptions.TransportError):
             if not self.fail_silently:

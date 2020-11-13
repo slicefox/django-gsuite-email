@@ -31,12 +31,7 @@ def get_credentials_file():
             return file_path
     raise ImproperlyConfigured('GSUITE_CREDENTIALS_FILE is not set, set it in seetings or as environment variable')
 
-def get_from_account():
-    if not hasattr(settings, 'GSUITE_FROM_ACCOUNT'):
-        raise ImproperlyConfigured('GSUITE_FROM_ACCOUNT is not set, set it in seetings or as environment variable')
-        # 
-    return settings.GSUITE_FROM_ACCOUNT
 
 
 def check_ready():
-    return get_credentials_file() and get_from_account()
+    return bool(get_credentials_file())

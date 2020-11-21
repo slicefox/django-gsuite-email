@@ -10,6 +10,17 @@ Welcome to Django GSuite Email's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+
+This package allows to use Django's `send_mail` command to send emails through GSuite account.
+
+It requires a serviceaccount credential created in Google coud console,
+The crendential file need to have *https://www.googleapis.com/auth/gmail.send* scope.
+
+Follow `this tutorial <https://developers.google.com/identity/protocols/oauth2/service-account#python>`_  to create the credentials file, make sure to add `https://www.googleapis.com/auth/gmail.send` scope.
+
+
+
+
 Installing
 ----------
 Install **Django GSuite Email** with

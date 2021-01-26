@@ -32,6 +32,18 @@ Usage
 
     EMAIL_BACKEND = 'django_gsuite_email.GSuiteEmailBackend'
 
+3. Send emails::
+
+    from django.core.mail import send_mail
+
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        'from@example.com',
+        ['to@example.com'],
+        fail_silently=False,
+    )
+
 
 
 Indices and tables

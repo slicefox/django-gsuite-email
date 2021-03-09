@@ -33,7 +33,7 @@ INSTALLED_APPS = [
 EMAIL_BACKEND = 'django_gsuite_email.GSuiteEmailBackend'
 ```
 
-#### 3. Set location of credentials file.\
+#### 3. Set location of credentials file.
 To do this, either set `GSUITE_CREDENTIALS_FILE` environment variable.\
 OR \
 set `GSUITE_CREDENTIALS_FILE` in `settings.py`

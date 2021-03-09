@@ -20,7 +20,7 @@ pip install django-gsuite-email
 
 # Quick start
 
-1. Add it to installed apps in `setings.py`
+#### 1. Add it to installed apps in `setings.py`
 ```python
 INSTALLED_APPS = [
     ...
@@ -28,12 +28,21 @@ INSTALLED_APPS = [
     ...
 ]
 ```
-2. Set the Email EMAIL_BACKEND setting
+#### 2. Set the Email EMAIL_BACKEND setting
 ```python
 EMAIL_BACKEND = 'django_gsuite_email.GSuiteEmailBackend'
 ```
 
-3. Send emails
+#### 3. Set location of credentials file.\
+To do this, either set `GSUITE_CREDENTIALS_FILE` environment variable.\
+OR \
+set `GSUITE_CREDENTIALS_FILE` in `settings.py`
+````python
+GSUITE_CREDENTIALS_FILE="/path/to/credentials/file.json"
+````
+> #### Note: `GSUITE_CREDENTIALS_FILE` in `settings.py` will take precedence over environment variable.
+
+#### 4. Send emails
 ```python
 from django.core.mail import send_mail
 

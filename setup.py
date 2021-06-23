@@ -20,12 +20,12 @@ URL = 'https://github.com/slicefox/django-gsuite-email'
 EMAIL = 'adithya.webdev@gmail.com'
 AUTHOR = 'slicefox'
 REQUIRES_PYTHON = '>=3.0.0'
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-   'google-api-python-client==1.8.0',
-   'google-auth==1.11.3'
+   'google-api-python-client>=1.8.0',
+   'google-auth>=1.11.3'
 ]
 
 # What packages are optional?

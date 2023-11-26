@@ -29,7 +29,7 @@ def get_credentials_file():
         file_path = environ.get('GSUITE_CREDENTIALS_FILE')
         if check_file(file_path):
             return file_path
-    raise ImproperlyConfigured('GSUITE_CREDENTIALS_FILE is not set, set it in seetings or as environment variable')
+    raise ImproperlyConfigured('GSUITE_CREDENTIALS_FILE is not set, set it in settings or as environment variable')
 
 
 
